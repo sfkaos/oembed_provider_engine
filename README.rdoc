@@ -11,6 +11,11 @@ Add the following to your Gemfile:
 
   gem "oembed_provider_engine"
 
+=== Mount Engine 
+In your config/routes.rb add:
+
+  mount OembedProviderEngine::Engine => "/oembed"
+
 === Provider Settings
 Add a config/initializers/oembed_provider.rb file to configure your provider settings:
 
@@ -24,7 +29,7 @@ If a controller doesn't map to model name as per tablize convention, map it like
 === Providable Model
 To declare your model providable, include the following:
 
-  include OembedProvider::OembedProvidable
+  include OembedProviderEngine::OembedProvidable
   # the first argument is the oembed type, that is one of :rich, :link, :photo, or :video
   oembed_providable_as :rich
 
@@ -38,6 +43,15 @@ If the methods have names different from the respective oembed attributes, you n
 You can also override the provider settings from the initializer:
 
   oembed_providable_as :link, provider_name: 'Example'
+
+=== Adding Custom Fields
+
+As part of the 'oembed_providable_as' class method you can now give an array of custom fields to the existing :link, :rich, :photo, :video types
+
+For example:
+  oembed_providable_as :rich, [:price, :title, :brand]
+
+These custom fields are optional
 
 === Discovery
 If you want to allow for oembed discovery, you can use the helper function from this engine to add links to the HTML head:

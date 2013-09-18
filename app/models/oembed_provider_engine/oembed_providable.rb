@@ -23,7 +23,10 @@ module OembedProviderEngine
 
           specs = args.last.is_a?(Hash) ? args.pop : Hash.new
 
+          custom_attribs = args.last.is_a?(Array) ? args.pop : Array.new
+
           oembed_type = args.first
+
 
           if ![:photo, :video, :link, :rich].include?(oembed_type)
               raise ArgumentError, "oEmbed type must be :photo, :video, :link, or :rich"
@@ -64,9 +67,11 @@ module OembedProviderEngine
             # http://oembed.com/#section2 - 2.3.4
             # :type is required, but is model wide and set via oembed_providable_as
             # :version is required and is handled below
-            attributes_to_define = OembedProvider.optional_attributes
+            attributes_to_define = OembedProvider.optional_attributes + custom_attribs
 
-            attributes_to_define += OembedProvider.required_attributes[oembed_type]
+            attributes_to_define += OembedProvider.required_attributes[oembed_type] 
+
+            
 
             # site wide values
             # :provider_name, :provider_url, :cache_age
@@ -104,7 +109,7 @@ module OembedProviderEngine
             end
 
             cattr_accessor :optional_attributes_specs
-            self.optional_attributes_specs = method_specs_for(OembedProvider.optional_attributes)
+            self.optional_attributes_specs = method_specs_for(OembedProvider.optional_attributes + custom_attribs)
 
             cattr_accessor :required_attributes_specs
             self.required_attributes_specs = method_specs_for(OembedProvider.required_attributes[oembed_type])
